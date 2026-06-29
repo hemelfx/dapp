@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You? 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blush-50:#fff4f0;
+    --blush-100:#fbdcd0;
+    --paper:#fffbf6;
+    --ink:#4a2530;
+    --muted:#8b6b72;
+    --rose:#c8425c;
+    --rose-dark:#a8334a;
+    --gold:#cfa46b;
+    --line:#ecd9cf;
+    --shadow: 0 30px 60px -20px rgba(74,37,48,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+
+  body{
+    min-height:100vh;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 18% 12%, #fff8f4 0%, transparent 45%),
+      linear-gradient(165deg, var(--blush-50) 0%, var(--blush-100) 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 18px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .petal{
+    position:fixed;
+    width:14px; height:14px;
+    background:var(--rose);
+    opacity:.16;
+    border-radius: 0 50% 50% 50%;
+    transform:rotate(45deg);
+    animation: drift 26s linear infinite;
+    pointer-events:none;
+  }
+  .petal.p2{ width:10px;height:10px; background:var(--gold); animation-duration:32s; }
+  .petal.p3{ width:18px;height:18px; animation-duration:38s; }
+  .petal.p4{ width:9px;height:9px; background:var(--gold); animation-duration:22s; }
+
+  @keyframes drift{
+    0%{ transform: translate(0,110vh) rotate(45deg); }
+    100%{ transform: translate(40px,-10vh) rotate(230deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .petal{ animation:none; display:none; }
+    *{ transition-duration:.01ms !important; }
+  }
+
+  .stage{
+    position:relative;
+    width:100%;
+    max-width:400px;
+  }
+
+  .seal{
+    position:relative;
+    z-index:3;
+    width:64px;height:64px;
+    margin:0 auto -32px;
+    border-radius:50%;
+    background:linear-gradient(155deg,#dd7d8f,var(--rose) 60%);
+    border:3px solid var(--paper);
+    box-shadow:0 10px 24px -8px rgba(168,51,74,0.55);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .seal svg{ width:26px; height:26px; fill:var(--paper); }
+  .seal.stamped{ transform: scale(1.18) rotate(-6deg); }
+
+  .card{
+    position:relative;
+    background:var(--paper);
+    border-radius:26px;
+    padding:52px 32px 36px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  .card::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(rgba(74,37,48,0.025) 1px, transparent 1px);
+    background-size:4px 4px;
+    pointer-events:none;
+  }
+
+  .eyebrow{
+    text-align:center;
+    font-size:11.5px;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:600;
+    margin:0 0 10px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    text-align:center;
+    font-size:28px;
+    line-height:1.25;
+    margin:0 0 28px;
+    color:var(--ink);
+  }
+
+  .step{ display:none; }
+  .step.active{ display:block; animation:rise .5s ease both; }
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---- step 1 ---- */
+  .ask-zone{ position:relative; height:118px; }
+  .btn{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    padding:15px 26px;
+  }
+  .btn-yes{
+    background:var(--rose);
+    color:#fff8f5;
+    box-shadow:0 14px 26px -10px rgba(168,51,74,0.55);
+    position:absolute;
+    left:50%; top:0;
+    transform:translateX(-50%);
+    transition: transform .15s ease, background .2s ease;
+    white-space:nowrap;
+  }
+  .btn-yes:hover{ background:var(--rose-dark); transform:translateX(-50%) translateY(-2px); }
+  .btn-yes:active{ transform:translateX(-50%) scale(.96); }
+
+  .btn-no{
+    background:transparent;
+    color:var(--muted);
+    border:1.5px solid var(--line);
+    position:absolute;
+    top:70px; left:50%;
+    transform:translateX(-50%);
+    transition: left .28s ease, top .28s ease, transform .2s ease, opacity .2s ease, font-size .2s ease;
+    font-size:14px;
+    padding:11px 20px;
+  }
+
+  .dodge-caption{
+    min-height:20px;
+    text-align:center;
+    font-size:13px;
+    color:var(--muted);
+    margin-top:10px;
+    font-style:italic;
+  }
+
+  /* ---- step 2 : food ---- */
+  .subhead{
+    text-align:center;
+    font-size:14px;
+    color:var(--muted);
+    margin:-18px 0 24px;
+  }
+  .food-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .food{
+    background:#fdf6f1;
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:16px 8px;
+    text-align:center;
+    cursor:pointer;
+    transition: border-color .15s ease, background .15s ease, transform .15s ease;
+  }
+  .food:hover{ transform:translateY(-2px); }
+  .food .emoji{ font-size:26px; display:block; margin-bottom:6px; }
+  .food .label{ font-size:13px; font-weight:500; color:var(--ink); }
+  .food.selected{
+    border-color:var(--rose);
+    background:#fdebee;
+    box-shadow:0 8px 18px -10px rgba(200,66,92,0.5);
+  }
+  .food:focus-visible, .btn:focus-visible, .field input:focus-visible{
+    outline:2px solid var(--rose-dark);
+    outline-offset:3px;
+  }
+
+  .btn-block{
+    background:var(--rose);
+    color:#fff8f5;
+    width:100%;
+    box-shadow:0 14px 26px -10px rgba(168,51,74,0.5);
+    transition: opacity .2s ease, transform .15s ease, background .2s ease;
+  }
+  .btn-block:disabled{ opacity:.35; cursor:not-allowed; box-shadow:none; }
+  .btn-block:not(:disabled):hover{ background:var(--rose-dark); transform:translateY(-2px); }
+
+  /* ---- step 3 : when ---- */
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--muted);
+    margin-bottom:6px;
+    letter-spacing:.02em;
+  }
+  .field input{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    background:#fdf6f1;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:13px 14px;
+  }
+
+  /* ---- step 4 : ticket ---- */
+  .ticket-head{ text-align:center; margin-bottom:22px; }
+  .ticket-head .yay{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:26px;
+    color:var(--rose-dark);
+  }
+
+  .details{
+    background:#fdf6f1;
+    border-radius:16px;
+    padding:18px 20px;
+    margin-bottom:4px;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:15px;
+    padding:7px 0;
+    color:var(--ink);
+  }
+  .row .ic{ font-size:16px; width:20px; }
+
+  .tear{
+    height:26px;
+    margin:2px -32px;
+    background-image: radial-gradient(circle at 8px 0, transparent 9px, #fdf6f1 9.5px);
+    background-size:18px 18px;
+    background-repeat:repeat-x;
+    background-position: -4px -9px;
+  }
+
+  .ps{
+    font-family:'Caveat', cursive;
+    font-size:21px;
+    line-height:1.35;
+    color:var(--rose-dark);
+    text-align:center;
+    padding:18px 6px 14px;
+  }
+
+  .send-status{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:10px;
+    min-height:16px;
+  }
+
+  .again{
+    display:block;
+    text-align:center;
+    margin:14px auto 0;
+    font-size:13px;
+    color:var(--muted);
+    background:none;
+    border:none;
+    text-decoration:underline;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<div class="petal" style="left:8%; animation-delay:0s;"></div>
+<div class="petal p2" style="left:24%; animation-delay:-6s;"></div>
+<div class="petal p3" style="left:62%; animation-delay:-14s;"></div>
+<div class="petal p4" style="left:80%; animation-delay:-3s;"></div>
+
+<div class="stage">
+
+  <div class="seal" id="seal">
+    <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10.1-9.2C0.4 9.1 1.6 5.6 4.7 4.6 7 3.9 9 4.8 12 8c3-3.2 5-4.1 7.3-3.4 3.1 1 4.3 4.5 2.8 7.2C19.5 16.4 12 21 12 21z"/></svg>
+  </div>
+
+  <div class="card">
+
+    <!-- STEP 1: ask -->
+    <section class="step active" id="step-1">
+      <p class="eyebrow">not a text. a whole website.</p>
+      <h1>Will you go on<br>a date with me?</h1>
+      <div class="ask-zone" id="askZone">
+        <button class="btn btn-yes" id="yesBtn">Yes, I'd love to</button>
+        <button class="btn btn-no" id="noBtn">no</button>
+      </div>
+      <p class="dodge-caption" id="dodgeCaption">&nbsp;</p>
+    </section>
+
+    <!-- STEP 2: food -->
+    <section class="step" id="step-2">
+      <p class="eyebrow">step 1 of 2</p>
+      <h1>What are we eating?</h1>
+      <p class="subhead">pick one — you'll change your mind at the restaurant anyway</p>
+      <div class="food-grid" id="foodGrid" role="radiogroup" aria-label="Food choice">
+        <div class="food" tabindex="0" role="radio" aria-checked="false" data-food="Pizza" data-emoji="🍕"><span class="emoji">🍕</span><span class="label">Pizza</span></div>
+        <div class="food" tabindex="0" role="radio" aria-checked="false" data-food="Sushi" data-emoji="🍣"><span class="emoji">🍣</span><span class="label">Sushi</span></div>
+        <div class="food" tabindex="0" role="radio" aria-checked="false" data-food="Burgers" data-emoji="🍔"><span class="emoji">🍔</span><span class="label">Burgers</span></div>
+        <div class="food" tabindex="0" role="radio" aria-checked="false" data-food="Pasta" data-emoji="🍝"><span class="emoji">🍝</span><span class="label">Pasta</span></div>
+        <div class="food" tabindex="0" role="radio" aria-checked="false" data-food="Tacos" data-emoji="🌮"><span class="emoji">🌮</span><span class="label">Tacos</span></div>
+        <div class="food" tabindex="0" role="radio" aria-checked="false" data-food="Ramen" data-emoji="🍜"><span class="emoji">🍜</span><span class="label">Ramen</span></div>
+      </div>
+      <button class="btn btn-block" id="nextBtn1" disabled>Next</button>
+    </section>
+
+    <!-- STEP 3: when -->
+    <section class="step" id="step-3">
+      <p class="eyebrow">step 2 of 2</p>
+      <h1>When works for you?</h1>
+      <div class="field">
+        <label for="dateInput">Date</label>
+        <input type="date" id="dateInput">
+      </div>
+      <div class="field">
+        <label for="timeInput">Time</label>
+        <input type="time" id="timeInput">
+      </div>
+      <button class="btn btn-block" id="nextBtn2">Confirm</button>
+    </section>
+
+    <!-- STEP 4: ticket -->
+    <section class="step" id="step-4">
+      <div class="ticket-head">
+        <p class="eyebrow">confirmed</p>
+        <p class="yay">It's a date 🤍</p>
+      </div>
+      <div class="details">
+        <div class="row"><span class="ic">📅</span><span id="outDate">—</span></div>
+        <div class="row"><span class="ic">⏰</span><span id="outTime">—</span></div>
+        <div class="row"><span class="ic" id="outFoodIcon">🍽️</span><span id="outFood">—</span></div>
+      </div>
+      <div class="tear"></div>
+      <p class="ps">a normal person would've just texted you.<br>but here we are — can't wait. 🌷</p>
+      <button class="btn btn-block" id="sendBtn">Send it 💌</button>
+      <p class="send-status" id="sendStatus">&nbsp;</p>
+      <button class="again" id="againBtn">plan another one</button>
+    </section>
+
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     To receive the submitted answer (date/time/food) yourself:
+     1. Create a free form at https://formspree.io (or any form
+        backend — Web3Forms, Getform, etc. work the same way).
+     2. Copy the endpoint URL it gives you, e.g.
+        "https://formspree.io/f/abc123"
+     3. Paste it below, replacing the placeholder.
+     If you leave the placeholder in, the page still works —
+     it just won't send the data anywhere.
+  ============================================================ */
+  const FORM_ENDPOINT = "https://formspree.io/f/xvzjqbod";
+
+  const stepEls = {
+    1: document.getElementById('step-1'),
+    2: document.getElementById('step-2'),
+    3: document.getElementById('step-3'),
+    4: document.getElementById('step-4'),
+  };
+  function showStep(n){
+    Object.values(stepEls).forEach(el => el.classList.remove('active'));
+    stepEls[n].classList.add('active');
+  }
+
+  // ---- Step 1: the unwinnable "no" ----
+  const askZone = document.getElementById('askZone');
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const seal = document.getElementById('seal');
+  const caption = document.getElementById('dodgeCaption');
+
+  const dodgeLines = [
+    "nice try.",
+    "almost had it.",
+    "so close.",
+    "not happening.",
+    "you're just curious now.",
+    "ok this is impressive, still no.",
+  ];
+  let dodgeCount = 0;
+  let noScale = 1;
+
+  function fleeNo(){
+    const zoneW = askZone.clientWidth;
+    const zoneH = askZone.clientHeight;
+    const btnW = noBtn.offsetWidth;
+    const btnH = noBtn.offsetHeight;
+    const maxX = Math.max(zoneW - btnW, 20);
+    const maxY = Math.max(zoneH - btnH, 0);
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+    noBtn.style.transform = 'translateX(0) scale(' + noScale + ')';
+
+    dodgeCount++;
+    noScale = Math.max(0.55, 1 - dodgeCount * 0.07);
+    caption.textContent = dodgeLines[Math.min(dodgeCount - 1, dodgeLines.length - 1)];
+  }
+
+  noBtn.addEventListener('pointerenter', fleeNo);
+  noBtn.addEventListener('click', (e) => { e.preventDefault(); fleeNo(); });
+  noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); fleeNo(); }, {passive:false});
+
+  yesBtn.addEventListener('click', () => {
+    seal.classList.add('stamped');
+    setTimeout(() => showStep(2), 320);
+  });
+
+  // ---- Step 2: food choice ----
+  const foods = document.querySelectorAll('.food');
+  const nextBtn1 = document.getElementById('nextBtn1');
+  let chosenFood = null;
+
+  function selectFood(el){
+    foods.forEach(f => { f.classList.remove('selected'); f.setAttribute('aria-checked','false'); });
+    el.classList.add('selected');
+    el.setAttribute('aria-checked','true');
+    chosenFood = { name: el.dataset.food, emoji: el.dataset.emoji };
+    nextBtn1.disabled = false;
+  }
+
+  foods.forEach(f => {
+    f.addEventListener('click', () => selectFood(f));
+    f.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectFood(f); }
+    });
+  });
+
+  nextBtn1.addEventListener('click', () => showStep(3));
+
+  // ---- Step 3: date & time ----
+  const dateInput = document.getElementById('dateInput');
+  const timeInput = document.getElementById('timeInput');
+  const nextBtn2 = document.getElementById('nextBtn2');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function toISODate(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+
+  function defaultFriday(){
+    const today = new Date();
+    const day = today.getDay();
+    let diff = (5 - day + 7) % 7;
+    if (diff === 0) diff = 7;
+    const f = new Date(today);
+    f.setDate(today.getDate() + diff);
+    return f;
+  }
+
+  function resetWhenFields(){
+    const todayISO = toISODate(new Date());
+    dateInput.min = todayISO;
+    dateInput.value = toISODate(defaultFriday());
+    timeInput.value = "20:00";
+  }
+  resetWhenFields();
+
+  function formatDateDisplay(iso){
+    const [y,m,d] = iso.split('-').map(Number);
+    const dt = new Date(y, m-1, d);
+    return dt.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+  }
+  function formatTimeDisplay(hhmm){
+    const [h,m] = hhmm.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    return h12 + ':' + pad(m) + ' ' + period;
+  }
+
+  // ---- Step 4: confirmation + send ----
+  const sendBtn = document.getElementById('sendBtn');
+  const sendStatus = document.getElementById('sendStatus');
+
+  nextBtn2.addEventListener('click', () => {
+    if (!dateInput.value || !timeInput.value) return;
+    document.getElementById('outFood').textContent = chosenFood.name;
+    document.getElementById('outFoodIcon').textContent = chosenFood.emoji;
+    document.getElementById('outDate').textContent = formatDateDisplay(dateInput.value);
+    document.getElementById('outTime').textContent = formatTimeDisplay(timeInput.value);
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Send it 💌';
+    sendStatus.textContent = '\u00a0';
+    showStep(4);
+  });
+
+  sendBtn.addEventListener('click', async () => {
+    if (FORM_ENDPOINT.includes('YOUR_FORM_ID')){
+      sendStatus.textContent = "demo mode — add your form endpoint in the code to actually receive this";
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sent ✓ (demo)';
+      return;
+    }
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+    try{
+      const fd = new FormData();
+      fd.append('date', dateInput.value);
+      fd.append('time', timeInput.value);
+      fd.append('food', chosenFood.name);
+      fd.append('answer', 'yes');
+      const res = await fetch(FORM_ENDPOINT, { method:'POST', headers:{ 'Accept':'application/json' }, body: fd });
+      if (res.ok){
+        sendBtn.textContent = 'Sent ✓';
+        sendStatus.textContent = "she'll see this in your inbox";
+      } else {
+        throw new Error('bad response');
+      }
+    } catch(err){
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send it 💌';
+      sendStatus.textContent = "couldn't send — check the form endpoint";
+    }
+  });
+
+  // ---- restart ----
+  document.getElementById('againBtn').addEventListener('click', () => {
+    dodgeCount = 0; noScale = 1;
+    noBtn.style.left = '50%'; noBtn.style.top = '70px'; noBtn.style.transform = 'translateX(-50%) scale(1)';
+    caption.textContent = '\u00a0';
+    foods.forEach(f => { f.classList.remove('selected'); f.setAttribute('aria-checked','false'); });
+    chosenFood = null;
+    nextBtn1.disabled = true;
+    resetWhenFields();
+    seal.classList.remove('stamped');
+    showStep(1);
+  });
+</script>
+</body>
+</html>
